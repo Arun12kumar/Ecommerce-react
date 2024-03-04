@@ -1,0 +1,155 @@
+
+
+.mainplace{
+    background-color: #f1f3f6;
+    padding-top: 20px;
+    min-height: 90vh;
+}
+
+.container{
+    width: 85vw;
+    margin: auto;
+    min-height: 40vh;
+    display: grid;
+    gap: 15px;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    
+}
+
+.items1{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-end: 3;
+    grid-row-start: 1;
+    background-color: #fff;
+    height: min-content;
+    
+}
+.items2{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-end: 2;
+    grid-row-start: 1;
+    background-color: #fff;
+}
+
+.box1{
+    background-color: #3586ff;
+    padding: 10px 10px;
+    color: #fff;
+    font-weight: 600;
+}
+
+.box2{
+    padding: 10px 10px;
+    border-bottom: 1px solid #c8c8c8;
+    font-size: 14px;
+    transition: 500ms;
+    font-size: 12px;
+}
+.box3{
+    padding: 10px 10px;
+    border-bottom: 1px solid #c8c8c8;
+    font-size: 14px;
+    transition: 500ms;
+    font-size: 12px;
+}
+.box4{
+    padding: 10px 10px;
+    font-size: 14px;
+    transition: 500ms;
+    font-size: 12px;
+    
+}
+
+#toogle{
+    display: none;
+}
+
+
+.first{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+.first1{
+    padding:15px 90px;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+#logo{
+    width: 30px;
+}
+#butts{
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 17px;
+}
+.box2:hover{
+    background-color: #3586ff3f;
+}
+.box3:hover{
+    background-color: #3586ff3f;
+}
+.box4:hover{
+    background-color: #3586ff3f;
+}
+
+
+/* Responsive Design */
+.items2{
+    background-color: #fff;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end:3;
+    padding: 30px 30px;
+    
+}
+.sect1{
+    padding: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+.sect{
+    border-bottom: 1px solid #c8c8c8;
+    
+}
+
+#sect1{
+    border-bottom: 1px dashed #c8c8c8;
+}
+#sect11{
+    border-bottom: 1px dashed #3e8e42;
+}
+
+.sect3{
+    padding: 17px 0;
+    color: #3e8e42;
+}
+#para{
+    color: #3e8e42;
+}
+
+/* ****************** */
+
+/* atm card style */
+
+#atm{
+    display: flex;
+}
+
+/* bill style */
+
+#sect2 img{
+    width: 100px;
+    height: 120px;
+    object-fit: contain;
+}

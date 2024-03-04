@@ -1,0 +1,155 @@
+
+
+.mainbody{
+    background-color: #f1f3f6;
+    padding: 10px 50px;
+}
+
+.container{
+    display: grid;
+    grid-template-columns: 1.5fr 2fr;
+    grid-template-rows: 2fr 0.8fr;
+    
+    
+}
+
+.item1{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1 ;
+    grid-row-end:  2;
+    background-color: #fff;
+    padding: 30px 30px;
+}
+
+.item2{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 1 ;
+    grid-row-end:  3;
+    padding: 30px 30px;
+    background-color: #fff;
+    overflow:scroll;
+    height: 90vh;
+}
+.item3{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end:  3;
+    display: flex;
+    justify-content: center;
+    align-items: first baseline;
+    gap: 19px;
+    padding: 20px 0;
+    background-color: #fff;
+    
+}
+
+/* small star btn */
+
+#star{
+    width: 50px;
+    height: 21px;
+    display: flex;
+    align-items: center;
+}
+
+.amount{
+    display: flex;
+    gap: 18px;
+    color: green;
+}
+.amount p{
+    color: rgb(130, 130, 130);
+    text-decoration:line-through;
+}
+.amount h4{
+    color: #000;
+}
+
+/* ofer style */
+
+
+#offer{
+    display: flex;
+    align-items: baseline;
+    gap: 17px;
+}
+::-webkit-scrollbar{
+    display: none;
+}
+
+/* image style set */
+
+.set{
+    display: grid;
+    border: 1px solid #c8c8c8;
+    grid-template-columns: 0.2fr 1fr;
+    grid-template-rows: 55vh;
+}
+.imageset1{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1 ;
+    grid-row-end:  2;
+    border: 1px solid #c8c8c8;
+    padding: 18px 0;
+}
+
+.imageset2{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 1 ;
+    grid-row-end:  2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.imageset1 ul li img{
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+}
+.imageset1 ul li{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.imageset1 ul{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap:  20px;
+}
+
+
+.imageset2 img{
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+}
+
+/* discription style */
+#list{
+    width: 350px;
+    margin-left: 55px;
+}
+#list p ul{
+    list-style: disc;
+    
+}
+
+#list p ul li::marker{
+    color: #969595;
+}
+#spec p figure table{
+    height: 300px;
+    width: 500px;
+    border-bottom: 1px solid black;
+}
+#spec{
+    height: 354px
+}
