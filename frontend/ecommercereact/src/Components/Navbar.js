@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import flipkartLogo from '../images/fkheaderlogo_exploreplus-44005d.svg'
 import { CiSearch } from "react-icons/ci";
 import { RxAvatar } from "react-icons/rx";
@@ -12,12 +12,21 @@ import AuthContext from "../Context/AuthContext"
 import { Link } from 'react-router-dom'
 import jwt_decode from "jwt-decode";
 import { IoIosLogOut } from "react-icons/io";
+import Searchlist from './Searchlist';
+import SearchResult from './SearchResult';
+
+
+
+
 
 
 
 const Navbar = () => {
   const { logoutUser,user } = useContext(AuthContext)
+  const [inputs,setInput] = useState("");
 
+  
+  const [search,setSearch] = useState([])
   const token = localStorage.getItem('authTokens')
 
   if (token) {
@@ -29,12 +38,34 @@ const Navbar = () => {
   if (token && user) {
     username = user.username;
   }
+
+  const FetchData =(value)=>{
+    fetch("http://127.0.0.1:8000/api/product/products/")
+    .then((response) => response.json( )).then((json) =>{
+      console.log(json);
+      const results = json.filter((product) =>{
+        return value && product && product.title && product.title.toLowerCase().includes(value)
+        
+      })
+      setSearch(results)
+   
+      
+    })
+    
+  }
+
+  const handleChange=(value) =>{
+    setInput(value)
+    FetchData(value)
+  }
+
+
   return (
 
     <div className={Navcss.container}>
       <div className={Navcss.items}><Link to = '/'><img src={flipkartLogo} alt="flipkartLogo" /></Link></div>
       <div className={Navcss.items3}>
-        <div className={Navcss.search}><CiSearch className={Navcss.searchlogo} /><input type="text" placeholder='Search For Products' className={Navcss.input} /></div>
+        <div className={Navcss.search}><CiSearch className={Navcss.searchlogo} /><Link to="/result"><input type="text" value={inputs} placeholder='Search For Products' className={Navcss.input} onChange={(e) => handleChange(e.target.value)}/></Link><div className={Navcss.searchlist}><Searchlist results={search}/></div></div>
       </div>
       <div className={Navcss.items}>
         <Dropdown>
@@ -69,7 +100,7 @@ const Navbar = () => {
           <div className={Navcss.items4}><button className={Navcss.butto} onClick={logoutUser}><IoIosLogOut className={Navcss.logo} />Logout</button></div>
         </>
       }
-
+      <div id={Navcss.arun}><SearchResult results={search}/></div>
     </div>
 
   )

@@ -29,5 +29,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 python-dotenv 1.0.1
 
-git remote add origin https://github.com/Arun12kumar/MainProj_Ecommerce.git
+git remote add origin https://github.com/Arun12kumar/Ecommerce-react.git
+
 git push -u origin master

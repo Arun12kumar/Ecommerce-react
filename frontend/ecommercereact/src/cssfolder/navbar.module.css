@@ -59,6 +59,13 @@
     align-items: center;
     
 }
+
+  /* search */
+.searchlist{
+    position: absolute; 
+    top: 30px;
+ 
+  }
 .items3{
     flex-grow: 1;
 }
@@ -74,4 +81,8 @@
     .items4{
         display: none;
     }
+  }
+
+#arun{
+    display: none;
   }

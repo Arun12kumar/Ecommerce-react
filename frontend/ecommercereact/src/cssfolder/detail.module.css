@@ -76,7 +76,7 @@
     align-items: baseline;
     gap: 17px;
 }
-::-webkit-scrollbar{
+.item2::-webkit-scrollbar{
     display: none;
 }
 

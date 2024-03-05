@@ -13,10 +13,12 @@ import { Link } from 'react-router-dom';
 function ProductDetail() {
   const [activeImage, setActiveImage] = useState(null);
   const [detail, setDetail] = useState([])
-  const [cart, setCart] = useState([])
+
   const [inform, setInform] = useState([])
   const [review, setReview] = useState([])
   const [show, setShow] = useState(true);
+
+  const [cart, setCart] = useState([])
 
   const { id } = useParams();
 
@@ -26,6 +28,7 @@ function ProductDetail() {
     const response = await axios.get(`http://127.0.0.1:8000/api/product/images/${id}`)
     const prores = await axios.get(`http://127.0.0.1:8000/api/product/products/${id}`)
     const reviwres = await axios.get(`http://127.0.0.1:8000/api/product/review/${id}`)
+    const cartresp = await axios.get('http://127.0.0.1:8000/api/product/addtocart/')
 
     const informArray = Array.isArray(prores.data) ? prores.data : [prores.data];
     const rewiwArray = Array.isArray(reviwres.data) ? reviwres.data : [reviwres.data];
@@ -33,7 +36,9 @@ function ProductDetail() {
     setDetail(response.data)
     setInform(informArray)
     setReview(rewiwArray)
-    console.log(prores.data)
+    setCart(cartresp)
+    console.log(cartresp.data)
+    console.log(cart.data)
 
   }
   useEffect(() => {
@@ -44,28 +49,19 @@ function ProductDetail() {
     setActiveImage(imageId);
   };
 
-    useEffect(() => {
-      axios.get('http://127.0.0.1:8000/api/product/addtocart/')
-          .then(res => {
-            setCart(res.data);
-            console.log(res.data);
-          })
-          .catch(err => {
-              console.error('Error fetching products:', err);
-          });
-    }, []);
+  const addhandle = () =>{
+    const cartData = [
+      {
+        "user": 1,
+        "product": 5,
+        "price": "10000.00",
+        "status": true,
+        "paid_status": "processing",
+        "order_name": "LG"
+      }
+    ]
+  }
 
-
-
-  // const addToCart = (productId) => {
-  //   axios.post('http://127.0.0.1:8000/api/product/addtocart/', { cart: productId })
-  //       .then(res => {
-  //           console.log('Product added to cart:', res.data);
-  //       })
-  //       .catch(err => {
-  //           console.error('Error adding product to cart:', err);
-  //       });
-  // };
 
   return (
     <div className={detailCss.mainbody}>
@@ -133,11 +129,8 @@ function ProductDetail() {
           ))}
         </div>
         {inform.map((set) =>(
-        <div className={detailCss.item3} key={set.id}><Link to="/cart"><button className='btn btn-warning'>Add to Cart</button></Link><Link to="/placeorder"><button className='btn btn-danger'>Buy Now</button></Link></div>
+        <div className={detailCss.item3} key={set.id}><Link to="/cart"><button className='btn btn-warning' onClick={addhandle}>Add to Cart</button></Link><Link to="/placeorder"><button className='btn btn-danger'>Buy Now</button></Link></div>
         ))}
-        {/* {cart.map(product =>(
-          <div key={product.id}><button onClick={addToCart(product.id)}>Add</button></div>
-        ))} */}
       </div>
 
     </div>
