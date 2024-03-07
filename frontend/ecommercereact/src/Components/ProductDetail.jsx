@@ -2,10 +2,12 @@
 import detailCss from '../cssfolder/detail.module.css'
 import { MdOutlineStar } from "react-icons/md";
 import { IoMdPricetag } from "react-icons/io";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { CartContext } from '../Context/AppContext';
+
 
 
 
@@ -18,17 +20,19 @@ function ProductDetail() {
   const [review, setReview] = useState([])
   const [show, setShow] = useState(true);
 
-  const [cart, setCart] = useState([])
-
+  // const [cart, setCart] = useState([])
+  const [cartclick,setCartclik] = useState(false)
   const { id } = useParams();
+  const {cartsData, setcartsData} = useContext(CartContext);
 
+  const [resId, setResId] = useState([])
 
   const productData = async () => {
 
     const response = await axios.get(`http://127.0.0.1:8000/api/product/images/${id}`)
     const prores = await axios.get(`http://127.0.0.1:8000/api/product/products/${id}`)
     const reviwres = await axios.get(`http://127.0.0.1:8000/api/product/review/${id}`)
-    const cartresp = await axios.get('http://127.0.0.1:8000/api/product/addtocart/')
+    // const cartresp = await axios.get('http://127.0.0.1:8000/api/product/addtocart/')
 
     const informArray = Array.isArray(prores.data) ? prores.data : [prores.data];
     const rewiwArray = Array.isArray(reviwres.data) ? reviwres.data : [reviwres.data];
@@ -36,9 +40,9 @@ function ProductDetail() {
     setDetail(response.data)
     setInform(informArray)
     setReview(rewiwArray)
-    setCart(cartresp)
-    console.log(cartresp.data)
-    console.log(cart.data)
+    // setCart(cartresp)
+    console.log(prores.data.category)
+    
 
   }
   useEffect(() => {
@@ -50,17 +54,105 @@ function ProductDetail() {
   };
 
   const addhandle = () =>{
-    const cartData = [
+    var previousCart = localStorage.getItem('cartData');
+    var cartJson = JSON.parse(previousCart)
+    
+    var cartData = [
       {
-        "user": 1,
-        "product": 5,
-        "price": "10000.00",
-        "status": true,
-        "paid_status": "processing",
-        "order_name": "LG"
+        'product':{
+          'id' : inform[0].id,
+          'title': inform[0].title,
+          'image': inform[0].image,
+          'price': inform[0].price
+        },
+        'user':{
+          'id':inform[0].user
+        }
+
       }
-    ]
+    ];
+    if(cartJson!= null){
+      cartJson.push(cartData)
+      var cartString=JSON.stringify(cartJson);
+      localStorage.setItem('cartData',cartString);
+      setcartsData(cartJson)
+    }else{
+      var newCartList=[];
+      newCartList.push(cartData);
+      var cartString=JSON.stringify(newCartList );
+      localStorage.setItem('cartData',cartString);
+    }
+    setCartclik(true)
+    console.log(inform[0].image)
+    const postData = async () => {
+      const data = {
+        user: inform[0].user,
+        price: inform[0].price,
+        order_name: inform[0].title,
+        quantity:1,
+      };
+    
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/api/product/addtocart/', data, {
+          headers: {
+            'Content-Type': 'application/json',
+            // Add any other headers as needed
+          },
+        });
+        console.log(response.data.id)
+        setResId(response.data.id)
+        console.log('Success:', response.data);
+        // Handle the response data as needed
+      } catch (error) {
+        console.error('Error:', error.message);
+        // Handle errors during the request
+      }
+    };
+    postData()
+    
   }
+
+  const removehandle = () =>{
+    var previousCart = localStorage.getItem('cartData');
+    var cartJson = JSON.parse(previousCart)
+    cartJson.map((cart,index)=>{
+      if (inform!=null && inform.id === inform.id){
+        // delete cartJson[index];
+        cartJson.splice(index ,1 );
+      }
+    })
+    var cartString=JSON.stringify(cartJson );
+    localStorage.setItem('cartData',cartString);
+    setCartclik(false)
+    setcartsData(cartJson);
+
+    const postData = async () => {
+      const data = {
+        user: inform[0].user,
+        price: inform[0].price,
+        order_name: inform[0].title,
+      };
+    
+      try {
+        const response = await axios.delete(`http://127.0.0.1:8000/api/product/tocart/${resId}/`, data, {
+          headers: {
+            'Content-Type': 'application/json',
+            // Add any other headers as needed
+          },
+        });
+    
+        console.log('Success:', response.data);
+        // Handle the response data as needed
+      } catch (error) {
+        console.error('Error:', error.message);
+        // Handle errors during the request
+      }
+    };
+    postData()
+  }
+
+
+
 
 
   return (
@@ -129,7 +221,7 @@ function ProductDetail() {
           ))}
         </div>
         {inform.map((set) =>(
-        <div className={detailCss.item3} key={set.id}><Link to="/cart"><button className='btn btn-warning' onClick={addhandle}>Add to Cart</button></Link><Link to="/placeorder"><button className='btn btn-danger'>Buy Now</button></Link></div>
+        <div className={detailCss.item3} key={set.id}>{! cartclick && <button className='btn btn-warning' onClick={addhandle}>Add to Cart</button>}{cartclick && <button className='btn btn-warning' onClick={removehandle}>remove to Cart</button>}<Link to="/placeorder"><button className='btn btn-danger'>Buy Now</button></Link></div>
         ))}
       </div>
 

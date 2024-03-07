@@ -12,20 +12,17 @@ import AuthContext from "../Context/AuthContext"
 import { Link } from 'react-router-dom'
 import jwt_decode from "jwt-decode";
 import { IoIosLogOut } from "react-icons/io";
+import { SearContext } from "../Context/SearContext";
 import Searchlist from './Searchlist';
-import SearchResult from './SearchResult';
-
-
-
-
-
-
+import { CartContext } from '../Context/AppContext';
 
 const Navbar = () => {
   const { logoutUser,user } = useContext(AuthContext)
   const [inputs,setInput] = useState("");
 
+  const products = useContext(SearContext);
   
+  const {cartsData, setcartsData} = useContext(CartContext);
   const [search,setSearch] = useState([])
   const token = localStorage.getItem('authTokens')
 
@@ -39,24 +36,35 @@ const Navbar = () => {
     username = user.username;
   }
 
-  const FetchData =(value)=>{
-    fetch("http://127.0.0.1:8000/api/product/products/")
-    .then((response) => response.json( )).then((json) =>{
-      console.log(json);
-      const results = json.filter((product) =>{
-        return value && product && product.title && product.title.toLowerCase().includes(value)
+  // const FetchData =(value)=>{
+  //   fetch("http://127.0.0.1:8000/api/product/products/")
+  //   .then((response) => response.json( )).then((json) =>{
+  //     console.log(json);
+  //     const results = json.filter((product) =>{
+  //       return value && product && product.title && product.title.toLowerCase().includes(value)
         
-      })
-      setSearch(results)
-   
-      
-    })
+  //     })
+  //     console.log(results)
+  //   })
     
-  }
+  // }
+
+  const fetchProducts = (value) => {
+    const results = products.filter((product) => {
+      return (
+        value &&
+        product &&
+        product.title &&
+        product.title.toLowerCase().includes(value.toLowerCase())
+      );
+    });
+    console.log(results);
+    setSearch(results);
+  };
 
   const handleChange=(value) =>{
     setInput(value)
-    FetchData(value)
+    fetchProducts(value);
   }
 
 
@@ -85,7 +93,7 @@ const Navbar = () => {
           </Dropdown.Menu>
         </Dropdown>
       </div>
-      <div className={Navcss.items4}><Link to='/cart'><IoCartOutline className={Navcss.logo} /> Cart</Link></div>
+      <div className={Navcss.items4}><Link to='/cart' ><div id={Navcss.cartitem}><IoCartOutline className={Navcss.logo}  /> Cart <p id={Navcss.cartnum}>{cartsData.length}</p></div></Link></div>
       <div className={Navcss.items4}><CiShop className={Navcss.logo} />Seller</div>
       {token === null &&
         <>
@@ -100,7 +108,7 @@ const Navbar = () => {
           <div className={Navcss.items4}><button className={Navcss.butto} onClick={logoutUser}><IoIosLogOut className={Navcss.logo} />Logout</button></div>
         </>
       }
-      <div id={Navcss.arun}><SearchResult results={search}/></div>
+     
     </div>
 
   )

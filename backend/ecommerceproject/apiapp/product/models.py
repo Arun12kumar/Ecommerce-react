@@ -153,23 +153,33 @@ class CartOrders(models.Model):
     paid_status = models.CharField(choices=STATUS_CHOICES, max_length=30, default="processing")  
     product = models.ForeignKey(Products, on_delete=models.SET_NULL, null=True)
     order_name = models.CharField(max_length=80,blank=True)     
+    quantity = models.IntegerField(default="0")
+    image = models.ImageField(upload_to= 'order_images', default="order_images.jpg",blank=True)  
+    total = models.DecimalField(max_digits=999999999999, decimal_places=2, default="100.20",blank=True)  
 
     class Meta:
         verbose_name_plural = "Cart Order"
 
     def  __str__(self):
         return self.order_name
+    
+    def save(self, *args, **kwargs):
+
+        # Calculate total price before saving
+        self.total = self.quantity * self.price
+
+        super().save(*args, **kwargs)
 
 
 class CartOrderItems(models.Model):
     order = models.OneToOneField(CartOrders, on_delete=models.CASCADE)
-    product_status = models.CharField(max_length=200) 
-    invoi_no = models.CharField(max_length=200)
-    item = models.CharField(max_length=200)
+    product_status = models.CharField(max_length=200,blank=True) 
+    invoi_no = models.CharField(max_length=200 , blank=True)
+    item = models.CharField(max_length=200,blank=True)
     quantity = models.IntegerField(default="0")
-    image = models.ImageField(upload_to= 'cartorder_images', default="cartorder_images.jpg") 
-    price = models.DecimalField(max_digits=999999999999, decimal_places=2, default="100.20")  
-    total = models.DecimalField(max_digits=999999999999, decimal_places=2, default="100.20")  
+    image = models.ImageField(upload_to= 'cartorder_images', default="cartorder_images.jpg",blank=True) 
+    price = models.DecimalField(max_digits=999999999999, decimal_places=2, default="100.20",blank=True)  
+    total = models.DecimalField(max_digits=999999999999, decimal_places=2, default="100.20",blank=True)  
 
     class Meta:
         verbose_name_plural = "Cart Order Item"

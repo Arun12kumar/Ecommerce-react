@@ -1,20 +1,27 @@
+import { useContext } from "react";
+import SearCss from '../cssfolder/searchresult.module.css'
+import { Link } from 'react-router-dom'
+import { Searchcontext } from "../Context/AppContext";
 
 
-const SearchResult = ({results}) => {
-    
-    
-    const informArray = Array(results)
-    console.log(informArray)
-   
+
+const SearchResult = () => {
+
+
+  const {searchData, setSearchData} = useContext(Searchcontext);
+  console.log(searchData)
+  
   return (
-    <div>SearchResult
-      {informArray.map((result, id) => {
-        return <div key={id} ></div>
+    <div className={SearCss.main}>
+      <h2>Product List</h2>
+      <ul className={SearCss.container}>
+        {searchData.map((item) => (
+          <li key={item.id} className={SearCss.items}><Link to={`/productdetail/${item.id}`}><img src={item.image}   /></Link></li>
+        ))}
+      </ul>
 
-      })}
     </div>
+  );
+};
 
-  )
-}
-
-export default SearchResult
+export default SearchResult;

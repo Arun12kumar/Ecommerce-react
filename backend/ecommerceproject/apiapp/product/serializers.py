@@ -79,3 +79,4 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     def __init__(self,*args, **kwargs):
         super(OrderDetailSerializer,self).__init__(*args, **kwargs) 
         self.Meta.depth = 1             
+

@@ -1,50 +1,60 @@
-# views.py
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from apiapp.product.models import Products
-from .serializers import ProductSerializer
-from paypal.standard.forms import PayPalPaymentsForm
-from django.conf import settings
-import uuid
-from django.urls import reverse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.http import HttpRequest,JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from django.views.decorators.csrf import csrf_exempt
+from apiapp.models import User
 
-class CheckOutAPIView(APIView):
-    def get(self, request, product_id):
-        product = get_object_or_404(Products, id=product_id)
-        serializer = ProductSerializer(product)
-        return Response({'product': serializer.data})
+import braintree
 
-    def post(self, request, product_id):
-        product = get_object_or_404(Products, id=product_id)
+gateway = braintree.BraintreeGateway(
+  braintree.Configuration(
+      braintree.Environment.Sandbox,
+      merchant_id="k7qtzrv2df8y7bw4",
+      public_key="d7bc9hkqqwvvnvv6",
+      private_key="f6e38379556bbcb295815c97f78b335a"
+  )
+)
 
-        host = request.get_host()
 
-        paypal_checkout = {
-            'business': settings.PAYPAL_RECEIVER_EMAIL,
-            'amount': str(product.price),  # Make sure to convert Decimal to string
-            'item_name': product.title,
-            'invoice': uuid.uuid4(),
-            'currency_code': 'USD',
-            'notify_url': f"http://{host}{reverse('paypal-ipn')}",
-            'return_url': f"http://{host}{reverse('payment-success', kwargs={'product_id': product.id})}",
-            'cancel_url': f"http://{host}{reverse('payment-failed', kwargs={'product_id': product.id})}",
+def validate_user_session(id, token):
+    User = get_user_model()
+
+    try:
+        user = User.objects.get(pk=id)
+        if user.session_token == token:
+            return True
+    except User.DoesNotExist:
+        pass
+
+    return False
+
+@csrf_exempt
+def generate_token(request, id, token):
+    if not validate_user_session(id, token):
+        return JsonResponse({'error': 'Invalid session'})
+    return JsonResponse({'clientToken': gateway.client_token.generate(), 'success': True})   
+
+@csrf_exempt
+def process_payment(request, id, token):
+    if not validate_user_session(id, token):
+        return JsonResponse({'error': 'Invalid session'})
+
+    nonce_from_the_client = request.POST["paymentMethodNonce"]         
+    amount_from_the_client = request.POST["amount"]   
+
+    result = gateway.transaction.sale({
+        "amount": amount_from_the_client,
+        "paymentMethodNonce": nonce_from_the_client,
+        "options": {
+            "submit_for_settlement": True
         }
+    })     
 
-        paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
-
-        return Response({'product': ProductSerializer(product).data, 'paypal': str(paypal_payment)})
-    
-
-class PaymentSuccessfulAPIView(APIView):
-    def get(self, request, product_id):
-        product = get_object_or_404(Products, id=product_id)
-        serializer = ProductSerializer(product)
-        return Response({'product': serializer.data, 'message': 'Payment successful'})
-
-class PaymentFailedAPIView(APIView):
-    def get(self, request, product_id):
-        product = get_object_or_404(Products, id=product_id)
-        serializer = ProductSerializer(product)
-        return Response({'product': serializer.data, 'message': 'Payment failed'})    
+    if result.is_success:
+        return JsonResponse({
+            "success": result.is_success, 
+            "transaction": {'id': result.transaction.id, 'amount': result.transaction.amount}
+        })
+    else:
+        return JsonResponse({'error': True, 'success': False})

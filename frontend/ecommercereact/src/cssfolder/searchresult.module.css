@@ -1,0 +1,27 @@
+
+.container{
+    background-color: white;
+    display: flex;
+    width: 87vw;
+    margin: auto;
+    gap: 25px;
+    flex-wrap: wrap;
+    border-radius: 6px;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 10px;
+}
+
+.items img{
+    width: 150px; 
+    height: 200px;  
+    object-fit: contain; 
+    
+}
+.items{
+    list-style: none;
+}
+.main{
+    background-color: #f1f3f6;
+    min-height: 100vh;
+}

@@ -24,7 +24,9 @@
     border: none;
     background-color: transparent;
 }
-
+#cartitem{
+    display: flex;
+}
 .container{
     width: 100%;
     display: flex;
@@ -65,11 +67,20 @@
     position: absolute; 
     top: 30px;
  
-  }
+}
 .items3{
     flex-grow: 1;
 }
 
+#cartnum{
+    color: white;
+    background-color: red;
+    border-radius: 12px;
+    height: 23px;
+    width: 24px;
+    text-align: center;
+    
+}
 @media screen and (max-width: 1254px) {
     body {
       background-color: lightgreen;
@@ -83,6 +94,6 @@
     }
   }
 
-#arun{
+/* #arun{
     display: none;
-  }
+  } */
