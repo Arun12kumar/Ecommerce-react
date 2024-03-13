@@ -7,7 +7,7 @@ from django.db.models.signals import  post_save
 class User(AbstractUser):
     username = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-
+   
     USERNAME_FIELD ='email'
     REQUIRED_FIELDS = ['username']
     
@@ -22,6 +22,7 @@ class Profile(models.Model):
     phone = models.IntegerField(null=True, blank=True)
     image_user = models.ImageField(upload_to='image_user', blank=True,default="default.jpg")  
     verified = models.BooleanField(default=True) 
+    
 
     def __str__(self):
         return self.full_name

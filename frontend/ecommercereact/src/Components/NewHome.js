@@ -65,7 +65,7 @@ const NewHome = () => {
       <div className={homeCss.productcontainer}>
         {product.map(item => (
           <div key={item.id}>
-            <Link to={`/productdetail/${item.id}`}><img src={item.image} alt=".." className={homeCss.productImage} /></Link>
+            <Link to={`/productinfo/${item.id}`}><img src={item.image} alt=".." className={homeCss.productImage} /></Link>
           </div>
         ))}
       </div>

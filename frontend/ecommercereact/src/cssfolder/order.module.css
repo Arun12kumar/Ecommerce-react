@@ -122,7 +122,7 @@ input::-webkit-inner-spin-button {
 
 .order1{
     display: flex;
-    justify-content: space-between;
+    gap: 25px;
     
 }
 

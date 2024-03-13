@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     'apiapp',
     'corsheaders',
     'apiapp.product',
-    'apiapp.payment',
+    
 
     # otherapp
     'django_ckeditor_5',
+    'drf_spectacular',
+   
     
 
 ]
@@ -148,11 +150,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-
-
-
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'DRF-React Ecommerce',
+
+    # OTHER SETTINGS
+}
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
@@ -197,6 +202,11 @@ SIMPLE_JWT = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 ALLOWED_HOSTS = ['*']
+# PayPal Sandbox or Live Mode
+# PAYPAL_MODE = 'sandbox'  # Change to 'live' for production
+
+# PAYPAL_CLIENT_ID = 'AXnsz7v3djWdAyWNLhm0mId8pX7rZyaureVTZDG0iaS4pgolyfNWVJH7aOHK4GfAeLXHuyw8b2fYAN9_'
+# PAYPAL_CLIENT_SECRET = 'ENgf5c3oS4vQe1dXgZqWDVZpuLHJSIgsq2gbmIcRLHcPuXnQqD23BQHPZ-MFGKPcd-DYeTXemie_QLnp'
 
 
 CKEDITOR_5_CONFIGS = {

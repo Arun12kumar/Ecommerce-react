@@ -10,6 +10,7 @@
 
 #card{
     align-items: center;
+    width: 250px;
 }
 
 #bts{
@@ -17,4 +18,8 @@
 }
 #container{
     padding: 10px 0;
+}
+
+#head{
+    font-size: 1rem;
 }

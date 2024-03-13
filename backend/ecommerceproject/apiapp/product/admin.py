@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apiapp.product.models import Category,Vendor,Products,ProductImage,ProductReview,Wishlist,Address,CartOrderItems,CartOrders,CartOrderTotal
+from apiapp.product.models import Category,Vendor,Products,ProductImage,ProductReview,Wishlist,Address,CartOrderItems,CartOrders,CartOrderTotal,Myorders
 
 # Register your models here.
 
@@ -38,7 +38,10 @@ class AddressAdmin(admin.ModelAdmin):
     list_display = ['user','address','status']  
 
 class CartOrderTotalAdmin(admin.ModelAdmin):  
-    list_display = ['total_amount','name']  
+    list_display = ['total_amount','name','status']  
+
+class MyordersAdmin(admin.ModelAdmin):  
+    list_display = ['amount','items','order_status']      
 
 admin.site.register(Products,ProductAdmin)  
 admin.site.register(ProductImage)  
@@ -53,4 +56,5 @@ admin.site.register(Wishlist,WishlistAdmin)
 admin.site.register(Address,AddressAdmin) 
 
 admin.site.register(CartOrderTotal,CartOrderTotalAdmin)      
+admin.site.register(Myorders,MyordersAdmin)      
     

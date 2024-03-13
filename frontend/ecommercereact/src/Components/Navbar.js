@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import flipkartLogo from '../images/fkheaderlogo_exploreplus-44005d.svg'
 import { CiSearch } from "react-icons/ci";
 import { RxAvatar } from "react-icons/rx";
@@ -14,15 +14,17 @@ import jwt_decode from "jwt-decode";
 import { IoIosLogOut } from "react-icons/io";
 import { SearContext } from "../Context/SearContext";
 import Searchlist from './Searchlist';
-import { CartContext } from '../Context/AppContext';
+
+import axios from 'axios';
 
 const Navbar = () => {
   const { logoutUser,user } = useContext(AuthContext)
   const [inputs,setInput] = useState("");
 
   const products = useContext(SearContext);
+  const [cartlength, setCartlength] = useState([])
   
-  const {cartsData, setcartsData} = useContext(CartContext);
+
   const [search,setSearch] = useState([])
   const token = localStorage.getItem('authTokens')
 
@@ -66,6 +68,22 @@ const Navbar = () => {
     setInput(value)
     fetchProducts(value);
   }
+  useEffect(() => {
+
+    const productData = async () => {
+
+
+        const response = await axios.get("http://127.0.0.1:8000/api/product/addtocart/")
+
+        setCartlength(response.data);
+
+        // setresId(response.data[0].id)
+        console.log(response.data)
+
+    }
+    productData()
+
+}, []);
 
 
   return (
@@ -87,13 +105,13 @@ const Navbar = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item href="/"><span><RxAvatar /> My Profile</span></Dropdown.Item>
-            <Dropdown.Item href="/"><span><LiaBoxSolid /> Orders</span></Dropdown.Item>
+            <Dropdown.Item href="/edit"><span><RxAvatar /> My Profile</span></Dropdown.Item>
+            <Dropdown.Item href="/orders"><span><LiaBoxSolid /> Orders</span></Dropdown.Item>
             <Dropdown.Item href="/"><span><IoMdHeartEmpty /> Wishlist</span></Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>
-      <div className={Navcss.items4}><Link to='/cart' ><div id={Navcss.cartitem}><IoCartOutline className={Navcss.logo}  /> Cart <p id={Navcss.cartnum}>{cartsData.length}</p></div></Link></div>
+      <div className={Navcss.items4}><Link to='/cart' ><div id={Navcss.cartitem}><IoCartOutline className={Navcss.logo}  /> Cart <p id={Navcss.cartnum}>{cartlength.length}</p></div></Link></div>
       <div className={Navcss.items4}><CiShop className={Navcss.logo} />Seller</div>
       {token === null &&
         <>

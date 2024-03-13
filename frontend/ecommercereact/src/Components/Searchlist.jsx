@@ -7,6 +7,7 @@ import { Searchcontext } from '../Context/AppContext';
 
 
 
+
 const Searchlist = ({ results }) => {
 
 
@@ -18,18 +19,18 @@ const Searchlist = ({ results }) => {
       var searchJson = JSON.parse(previousSearch)
       
       if(searchJson!= null){
-        searchJson.push(results)
+        // searchJson.push(results)
         var searchString=JSON.stringify(searchJson);
         localStorage.setItem('results',searchString);
         setSearchData(searchJson)
-      }else{
-        var newSearchList=[];
-        newSearchList.push(results);
-        var searchString=JSON.stringify(newSearchList );
-        localStorage.setItem('results',searchString);
-      }      
+      }// }else{
+      //   var newSearchList=[];
+      //   newSearchList.push(results);
+      //   var searchString=JSON.stringify(newSearchList );
+      //   localStorage.setItem('results',searchString);
+      // }      
     }
-
+    console.log(searchData)
 
 
   return (

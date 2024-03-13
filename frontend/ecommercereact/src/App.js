@@ -10,28 +10,31 @@ import Register from './Components/Register'
 import CartOreder from './Components/CartOreder'
 import Placeorder from './Components/Placeorder'
 import CategoryList from './Components/CategoryList'
-import ProductDetail from './Components/ProductDetail'
+// import ProductDetail from './Components/ProductDetail'
 import AppCss from './cssfolder/App.module.css'
 import SearchResult from "./Components/SearchResult";
 import { SearchProvider } from "./Context/SearContext";
 import { useState } from "react";
-import { CartContext } from "./Context/AppContext";
+
 import { Searchcontext } from "./Context/AppContext";
+import Payment from "./Components/Payment";
+import ProductInfo from "./Components/ProductInfo";
+import YourOrder from "./Components/YourOrder";
+import EditAddress from "./Components/EditAddress";
 
 
 
 
-const checkCart = localStorage.getItem('cartData');
+
 const datacheck = localStorage.getItem('results')
 
 
 function App() {
 
-  const [cartsData, setcartsData] = useState(JSON.parse(checkCart));
   const [searchData, setSearchData] = useState(JSON.parse(datacheck));
   return (
     <Router>
-      <CartContext.Provider value={{ cartsData, setcartsData }}>
+      
         <Searchcontext.Provider value={{ searchData, setSearchData }}>
           <AuthProvider>
             <SearchProvider>
@@ -43,7 +46,8 @@ function App() {
                     <Route component={NewLogin} path="/login" />
                     <Route component={Register} path="/register" exact />
                     <Route component={NewHome} path="/" exact />
-                    <Route component={ProductDetail} path="/productdetail/:id" exact />
+                    {/* <Route component={ProductDetail} path="/productdetail/:id" exact /> */}
+                    <Route component={ProductInfo} path="/productinfo/:id" exact />
 
                     <Route component={CartOreder} path="/cart" exact />
                     {/* <Route component={CartOreder} path="/cart/:id" exact /> */}
@@ -51,9 +55,12 @@ function App() {
 
 
                     <Route component={SearchResult} path="/result" exact />
+                    <Route component={YourOrder} path="/orders" exact />
+                    <Route component={EditAddress} path="/edit" exact />
 
 
                     <Route component={CategoryList} path="/list/:id" exact />
+                    <Payment/>
 
                   </Switch>
                 </div>
@@ -62,7 +69,7 @@ function App() {
             </SearchProvider>
           </AuthProvider>
         </Searchcontext.Provider>
-      </CartContext.Provider>
+      
     </Router>
   )
 }

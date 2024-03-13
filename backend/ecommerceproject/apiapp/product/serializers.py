@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from apiapp.product.models import Category,Vendor,Products,ProductImage,ProductReview,Wishlist,Address,CartOrderItems,CartOrders
+from apiapp.product.models import Category,Vendor,Products,ProductImage,ProductReview,Wishlist,Address,CartOrderItems,CartOrders,CartOrderTotal,Myorders
 
 # product serializers
 class ProductSerializer(serializers.ModelSerializer):
@@ -43,10 +43,7 @@ class WishlistSerializer(serializers.ModelSerializer):
         model = Wishlist
         fields = '__all__'
 
-class AddressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Address
-        fields = '__all__'
+
 
         
 
@@ -80,3 +77,20 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         super(OrderDetailSerializer,self).__init__(*args, **kwargs) 
         self.Meta.depth = 1             
 
+class OrderTotalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartOrderTotal
+        fields = '__all__'  
+
+class MyorderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Myorders
+        fields = '__all__'          
+
+
+# Adress      
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = '__all__'          
+           

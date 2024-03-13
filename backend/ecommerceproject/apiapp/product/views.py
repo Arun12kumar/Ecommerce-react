@@ -1,8 +1,8 @@
 from rest_framework import viewsets
-from apiapp.product.models import Category,Vendor,Products,ProductImage,ProductReview,Wishlist,Address,CartOrderItems,CartOrders
+from apiapp.product.models import Category,Vendor,Products,ProductImage,ProductReview,Wishlist,Address,CartOrderItems,CartOrders,CartOrderTotal,Myorders
 from rest_framework.views import APIView
 from .serializers import (CategorySerializer,ProductSerializer,VendorSerializer,ProductImageSerializer,ProductReviewSerializer,WishlistSerializer,
-         AddressSerializer,CartOrderItemsSerializer,CartOrdersSerializer,OrderSerializer,OrderDetailSerializer)
+         AddressSerializer,CartOrderItemsSerializer,CartOrdersSerializer,OrderSerializer,OrderDetailSerializer,OrderTotalSerializer,MyorderSerializer)
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -30,7 +30,7 @@ class CategoryListViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serialized_data = self.serializer_class(queryset, many=True, context={'request': request})
-        filtered_data = [{field: item[field] for field in ['title','image','price']} for item in serialized_data.data]
+        filtered_data = [item for item in serialized_data.data]
         return Response(filtered_data)
 
 # product views
@@ -57,8 +57,16 @@ class ProductImageViewSet(viewsets.ModelViewSet):
     
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = ProductReview.objects.all()
-    serializer_class = ProductReviewSerializer     
+    serializer_class = ProductReviewSerializer  
+    
+       
+class ReviewEachViewSet(viewsets.ModelViewSet):
+    
+    serializer_class = ProductReviewSerializer
 
+    def get_queryset(self):
+        product_id = self.kwargs.get('product_id')
+        return ProductReview.objects.filter(product=product_id)  
 
 
  
@@ -144,3 +152,74 @@ class cartObjectView(APIView):
         productData=self.get_object(pk)
         productData.delete()
         return Response('Delete Successfully')
+    
+
+class OrderProcessView(viewsets.ModelViewSet):
+    queryset =  CartOrderTotal.objects.all() 
+    serializer_class = OrderTotalSerializer     
+
+class MyorderView(viewsets.ModelViewSet):
+    queryset =  Myorders.objects.all() 
+    serializer_class = MyorderSerializer  
+
+
+class OrderUpdateView(APIView):
+    def get_object(self, pk):
+        try:
+            return CartOrderTotal.objects.get(pk=pk) 
+        except:
+            raise Http404 
+        
+
+    def get (self,request,pk,format=None):
+        orderData=self.get_object(pk)
+        serializers =  OrderTotalSerializer(orderData)
+        return Response(serializers.data)     
+
+    def put(self,request,pk,format=None):
+        orderData=self.get_object(pk)
+        serializers = OrderTotalSerializer(orderData,data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data)
+        
+        return Response({'message':'error','error':serializers.errors})  
+
+    def delete(self,request,pk,format=None) :
+        orderData=self.get_object(pk)
+        orderData.delete()
+        return Response('Delete Successfully')    
+
+
+# address    
+
+class AdressView(viewsets.ModelViewSet):
+    queryset =  Address.objects.all() 
+    serializer_class = AddressSerializer   
+
+class AddressUpdateView(APIView):
+    def get_object(self, pk):
+        try:
+            return Address.objects.get(pk=pk) 
+        except:
+            raise Http404 
+        
+
+    def get (self,request,pk,format=None):
+        orderData=self.get_object(pk)
+        serializers =  AddressSerializer(orderData)
+        return Response(serializers.data)     
+
+    def put(self,request,pk,format=None):
+        orderData=self.get_object(pk)
+        serializers = AddressSerializer(orderData,data=request.data)
+        if serializers.is_valid():
+            serializers.save()
+            return Response(serializers.data)
+        
+        return Response({'message':'error','error':serializers.errors})  
+
+    def delete(self,request,pk,format=None) :
+        orderData=self.get_object(pk)
+        orderData.delete()
+        return Response('Delete Successfully')           

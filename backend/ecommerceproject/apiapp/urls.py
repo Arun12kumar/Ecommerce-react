@@ -4,7 +4,7 @@ from apiapp import views
 
 app_name = "apiapp"
 app_name = "apiapp.product"
-app_name = "apiapp.payment"
+
 
 urlpatterns = [
     path('token/', views.MyTokenObtainPairView.as_view()),
@@ -14,6 +14,6 @@ urlpatterns = [
     path('test/', views.testEndPoint),
     path('', views.getRoutes),
     path('product/',include('apiapp.product.urls')),
-    path('payment/',include('apiapp.payment.urls')),
+    
 
 ]

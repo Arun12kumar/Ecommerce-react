@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from django_ckeditor_5.fields import CKEditor5Field 
 from django.db.models import Sum
 from decimal import Decimal
+from django.utils import timezone
 
 # Create your models here.
 STATUS_CHOICES = (
@@ -156,6 +157,7 @@ class CartOrders(models.Model):
     quantity = models.IntegerField(default="0")
     image = models.ImageField(upload_to= 'order_images', default="order_images.jpg",blank=True)  
     total = models.DecimalField(max_digits=999999999999, decimal_places=2, default="100.20",blank=True)  
+  
 
     class Meta:
         verbose_name_plural = "Cart Order"
@@ -180,6 +182,7 @@ class CartOrderItems(models.Model):
     image = models.ImageField(upload_to= 'cartorder_images', default="cartorder_images.jpg",blank=True) 
     price = models.DecimalField(max_digits=999999999999, decimal_places=2, default="100.20",blank=True)  
     total = models.DecimalField(max_digits=999999999999, decimal_places=2, default="100.20",blank=True)  
+     
 
     class Meta:
         verbose_name_plural = "Cart Order Item"
@@ -196,25 +199,40 @@ class CartOrderItems(models.Model):
         # Calculate total price before saving
         self.total = self.quantity * self.price
 
-        super().save(*args, **kwargs)   
+        super().save(*args, **kwargs)  
+
 
 class CartOrderTotal(models.Model):
-    order = models.OneToOneField(CartOrders, on_delete=models.CASCADE)
+   
     total_amount = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
     name = models.CharField(max_length=200, blank=True)
+    slug = models.SlugField(unique=True,default='sd3454')
+    status = models.BooleanField(default=False) 
+    payment_date = models.DateTimeField(default=timezone.now, blank=True, null=True)
+ 
 
 
     class Meta:
         verbose_name_plural = "Cart Order Total"
 
     def save(self, *args, **kwargs):
-        # Calculate the total amount based on the related CartOrderItems
-        total_amount = CartOrderItems.objects.filter(order=self.order).aggregate(Sum('total'))['total__sum']
-        self.total_amount = total_amount if total_amount else Decimal('0.00')
+        if self.slug == "" or self.slug == None:
+            uuid_key = shortuuid.uuid()
+            uniquied = uuid_key[:4]
+            self.slug = slugify(self.product_name) + '-' + str(uniquied.lower())
 
-        super().save(*args, **kwargs)
+        super(CartOrderTotal, self).save(*args, **kwargs) 
+
+class Myorders(models.Model):
+    amount = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    items = models.CharField(max_length=200, blank=True)
+    order_no = models.CharField(max_length=200 , blank=True)
+    order_status = models.BooleanField(default=False) 
+    payment_date = models.DateTimeField( blank=True, null=True)
 
 
+    class Meta:
+        verbose_name_plural = "My Order"
 
 ############################################# wishlist #######################################################################
 class ProductReview(models.Model):
@@ -223,15 +241,21 @@ class ProductReview(models.Model):
     review = models.TextField()
     rating = models.CharField(max_length=1, choices=RATING, default='1')
     date = models.DateTimeField(auto_now_add=True)
+    user_name = models.CharField(max_length=150, blank=True, null=True)
+    
 
     class Meta:
         verbose_name_plural = "Product Review"
 
 
-
-    
     def get_rating(self):  
         return self.rating
+    
+    def save(self, *args, **kwargs):
+        # Automatically fill user_name with the username when saving the instance
+        if self.user:
+            self.user_name = self.user.username
+        super(ProductReview, self).save(*args, **kwargs)
     
 
 class Wishlist(models.Model):
@@ -251,6 +275,9 @@ class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  
     address= models.CharField(max_length=256,null=True)
     status = models.BooleanField(default=False) 
+    first_name= models.CharField(max_length = 200, blank=True)
+    last_name= models.CharField(max_length = 200, blank=True)
+    phone= models.IntegerField(default=00000000, blank=True)
 
     class Meta:
         verbose_name_plural = "Address"
